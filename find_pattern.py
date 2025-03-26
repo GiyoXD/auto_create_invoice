@@ -31,7 +31,7 @@ def find_header_row(sheet, row_range, column_range, pattern):
         print(f"An error occurred: {e}")
         return None
 
-def cell_contains_any_chars(cell_value, chars_to_find, case_sensitive=False):
+def cell_not_empty(cell_value, chars_to_find, case_sensitive=False):
   if cell_value is None:
     return False
   cell_value = str(cell_value)
@@ -48,7 +48,7 @@ def cell_contains_any_chars(cell_value, chars_to_find, case_sensitive=False):
 
 def match_data(to_match_value, expected_values):
     for value in expected_values:
-        if cell_contains_any_chars(to_match_value, value):
+        if cell_not_empty(to_match_value, value):
             return value  # or to_match_value, depending on what you need to return
     return None
 
@@ -63,8 +63,8 @@ def found_empty_and_count_them():
 
 def storing_value(ws):
     letter = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-    header_list = {
-        "po": [],
+    header_map = {
+        "订单号": [],
         "item": [],
         "desc": [],
         "pcs": [],
@@ -76,11 +76,15 @@ def storing_value(ws):
         "inv_date": [],
     }
 
-    header_row = find_header_row(ws, 20, 20, "张数")
+    header_row = find_header_row(ws, 20, 20, "订单号")
+    if header_row == None:
+       print("header not found")
+       return 
+
 
     for i in range(1, 26):
         field_index = letter[i]
-        if ws[field_index+str(header_row)].value in header_list.keys():
+        if ws[field_index+str(header_row)].value in header_map.keys():
            head_index = field_index+str(header_row) 
            start_store_field(head_index)
             
